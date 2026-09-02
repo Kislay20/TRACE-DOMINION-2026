@@ -1,0 +1,16 @@
+{
+  "case_id": "THREADLINE-2026-002",
+  "test_type": "EDGE_CASE_TESTING",
+  "scenarios": [
+    {
+      "scenario_name": "Highly Uncertain Tip",
+      "raw_text": "Maybe saw someone, not sure if male or female, around 5 PM somewhere near hospital.",
+      "expected_behavior": "Low confidence score (<0.40), tagged as UNCERTAIN"
+    },
+    {
+      "scenario_name": "Direct Contradiction",
+      "raw_text": "Person was inside the metro coach at 18:00 sharp.",
+      "expected_behavior": "Flag conflict with TIP-001 (Bus Stand at 18:00)"
+    }
+  ]
+}
