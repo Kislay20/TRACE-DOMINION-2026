@@ -67,7 +67,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('THREADLINE | Active Case'),
+        title: GestureDetector(
+          onDoubleTap: () {
+            // This runs secretly when you double-tap the title
+            context.read<CaseProvider>().silentlyToggleBackend();
+            
+            // This shows a tiny dot at the bottom of the screen 
+            // so ONLY YOU know the switch happened.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  context.read<CaseProvider>().isGhostActive ? '●' : '● ●', // Thicker dots
+                  style: const TextStyle(color: Colors.white54, fontSize: 14),
+                  textAlign: TextAlign.center, // Centers it
+                ),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                behavior: SnackBarBehavior.floating, // Floats it above the bottom edge
+                duration: const Duration(seconds: 2), // Lasts a bit longer
+              ),
+            );
+          },
+          // This is the text you have to double-tap
+          child: const Text('THREADLINE | Active Case'),
+        ),
         backgroundColor: const Color(0xFF1E293B),
       ),
       body: Padding(

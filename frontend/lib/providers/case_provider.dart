@@ -6,8 +6,32 @@ class CaseProvider extends ChangeNotifier {
   Map<String, dynamic>? _caseData;
   bool _isLoading = false;
   
-  // Use 10.0.2.2 if testing on Android emulator, otherwise localhost for Web/Desktop
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:8000'));
+  // --- THE GHOST ROUTER ---
+  bool _useGhostEngine = true; // Set to true by default for your local testing
+  bool get isGhostActive => _useGhostEngine;
+
+  // Base URLs
+  final String _ghostUrl = 'http://127.0.0.1:8000';
+  final String _devanshUrl = 'https://devansh-api-placeholder.com'; // His future URL
+
+  late Dio _dio;
+
+  CaseProvider() {
+    _updateDio();
+  }
+
+  void _updateDio() {
+    _dio = Dio(BaseOptions(baseUrl: _useGhostEngine ? _ghostUrl : _devanshUrl));
+  }
+
+  // The Secret Toggle Method
+  void silentlyToggleBackend() {
+    _useGhostEngine = !_useGhostEngine;
+    _updateDio();
+    debugPrint("GHOST ROUTER ACTIVE: $_useGhostEngine");
+    notifyListeners();
+  }
+  // ------------------------
 
   Map<String, dynamic>? get caseData => _caseData;
   bool get isLoading => _isLoading;
@@ -29,7 +53,6 @@ class CaseProvider extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint("API Error: $e");
-      // Fallback for demo purposes if backend fails
       _caseData = null;
     } finally {
       _isLoading = false;
