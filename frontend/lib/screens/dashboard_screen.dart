@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/case_provider.dart';
 import '../widgets/relationship_card.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import '../widgets/evidence_timeline.dart';
 
 // Changed to StatefulWidget
 class DashboardScreen extends StatefulWidget {
@@ -168,7 +169,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              RelationshipList(relationships: caseData['relationships']),
+              EvidenceTimeline(relationships: caseData['relationships']),
               const Divider(height: 32),
 
               const Text(
