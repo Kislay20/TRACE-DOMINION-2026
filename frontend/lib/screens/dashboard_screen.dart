@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/case_provider.dart';
 import '../widgets/relationship_card.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 // Changed to StatefulWidget
 class DashboardScreen extends StatefulWidget {
@@ -15,12 +16,48 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   // Controller now safely lives in the State class
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
   final TextEditingController _tipController = TextEditingController();
+  
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  void _initSpeech() async {
+    await _speech.initialize(
+      onError: (val) => debugPrint('STT Error: $val'),
+      onStatus: (val) => debugPrint('STT Status: $val'),
+    );
+  }
 
   @override
   void dispose() {
     _tipController.dispose(); // Always dispose controllers to prevent memory leaks
     super.dispose();
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize();
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (val) => setState(() {
+            _tipController.text = val.recognizedWords;
+          }),
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+      // Optional: Auto-process when they stop speaking
+      if (_tipController.text.isNotEmpty) {
+        context.read<CaseProvider>().processNewTip(_tipController.text);
+      }
+    }
   }
 
   @override
@@ -41,6 +78,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // --- CONTROL PANEL ---
             Row(
               children: [
+                IconButton(
+                    icon: Icon(_isListening ? Icons.mic : Icons.mic_none),
+                    color: _isListening ? Colors.redAccent : Colors.white,
+                    onPressed: _listen,
+                  ),
                 Expanded(
                   child: TextField(
                     controller: _tipController,
