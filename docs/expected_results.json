@@ -1,0 +1,14 @@
+{
+  "test_scenario": "Live Witness Tip Reconciliation",
+  "input_trigger": {
+    "statement_id": "TIP-004",
+    "raw_text": "Saw the person near the bus stand around 6:05 PM. They entered a white hatchback."
+  },
+  "expected_ai_output": {
+    "corroborations": ["TIP-001"],
+    "conflicts": ["TIP-003"],
+    "highest_priority_lead": "Bus Stand Corridor",
+    "confidence_score_range": [0.85, 0.95],
+    "action_required": "Verify CCTV near Bus Stand (18:00 - 18:10)"
+  }
+}
